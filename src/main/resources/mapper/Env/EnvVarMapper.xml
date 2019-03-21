@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniu.mapper.EnvVarMapper">	
+	<!--变量条件  -->
+	<sql id="query_items_where">
+	        <if test="id != null and   id !='0'">  
+	            and  f_api.id = #{id}
+	        </if> 
+			<if test="varName != null and varName !=''">  
+	            and  f_var.varName like  "%"#{varName}"%"
+	        </if> 
+	        <if test="varType !=null and varType !='-1'">  
+	             and  f_var.varType = #{varType}
+	        </if>	          
+	</sql>
+
+	<insert id="addVar">
+		INSERT into f_var(varName,varValue,varType,createTime)
+		values(#{varName},#{varValue},#{varType},NOW()) 
+	</insert>
+	
+	<delete id="delVar">
+		delete from f_var where id=#{id}
+	</delete>
+	
+	<update id="updateVar" parameterType="com.xiaoniu.model.EnvVarModel">
+		update f_var set varName=#{varName},varValue=#{varValue},updateTime=NOW() 
+		where id=#{id}
+	</update>
+	
+	<select id="getAllVar" parameterType="com.xiaoniu.model.EnvVarModel" resultType="com.xiaoniu.model.EnvVarModel">
+		select * from f_var
+		<where>
+            <include refid="query_items_where"></include>
+        </where>
+	</select>
+	
+	<select id="getVar" resultType="com.xiaoniu.model.EnvVarModel"  parameterType="int">
+		select * from f_var where id=#{id}
+	</select>
+	
+	<select id="getVarByName" resultType="com.xiaoniu.model.EnvVarModel"  parameterType="String">
+		select * from f_var where varName=#{varName}
+	</select>
+		
+</mapper>    

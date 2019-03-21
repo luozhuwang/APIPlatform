@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.xiaoniu.mapper.APICaseMapper">
+
+	<sql id="query_items_where">
+        <if test="id != null and id !='' and  id !='0'">  
+            and  f_api_case.id = #{id}
+        </if> 
+        <if test="caseName != null and caseName !=''">  
+            and  f_api_case.caseName like  "%"#{caseName}"%"
+        </if> 
+		<if test="APIId != null and APIId !='' and  APIId !='0'">  
+            and  f_api_case.APIId = #{APIId}
+        </if>         
+   </sql>
+   
+	<select id="getALLAPICase" parameterType="com.xiaoniu.model.APICaseModel" resultType="APICaseModel">
+		select * from f_api_case
+		 <where>
+            <include refid="query_items_where"></include>
+        </where> 
+	</select>
+	
+	<select id="getAPICase"  parameterType="int" resultType="APICaseModel">
+		select * from f_api_case where id=#{id}
+	</select>
+	
+	<insert id="addAPICase" >
+			INSERT into f_api_case(caseData,caseName,APIId,caseAssert,caseParam,remark,createTime) 
+			values(#{caseData},#{caseName},#{APIId},#{caseAssert},#{caseParam},#{remark},NOW());
+	</insert>
+	
+	<update id="updateAPICase" parameterType="com.xiaoniu.model.APICaseModel">
+			update f_api_case set caseData=#{caseData},caseName=#{caseName},APIId=#{APIId},caseAssert=#{caseAssert},caseParam=#{caseParam},remark=#{remark},updateTime=NOW()
+			where id=#{id}
+	</update>
+	
+	<delete id="delAPICase"  parameterType="int">
+		delete from f_api_case where id=#{id}
+	</delete>
+</mapper>

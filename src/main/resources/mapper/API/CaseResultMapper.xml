@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.xiaoniu.mapper.CaseResultMapper">
+
+
+	<sql id="query_CaseResult"> 
+	        <if test="batch != null and   batch !='-1'">  
+	            and batch=#{batch}
+	        </if>
+           <if test="resultStatus != null and resultStatus !=''">  
+		            and  resultStatus like  "%"#{resultStatus}"%"
+		    </if>
+   	</sql>
+   		
+	<select id="getCaseResult"  resultType="com.xiaoniu.model.CaseResultModel"  parameterType="int">
+		select * from f_case_result where caseId=#{caseId} and batch=(select max(batch) from f_case_result where caseId=#{caseId} );
+	</select>
+	
+	<select id="getCaseResultByBatch"  resultType="com.xiaoniu.model.CaseResultModel" >
+		select * from f_case_result  
+		<where>
+            <include refid="query_CaseResult"></include>
+        </where>
+	</select>
+	
+	<insert id="addCaseResult" >
+			INSERT into f_case_result(caseId,setId,startTime,endTime,costTime,resultStatus,runEnv,batch,createTime) 
+			values(#{caseId},#{setId},#{startTime},#{endTime},#{costTime},#{resultStatus},#{runEnv},#{batch},NOW());
+	</insert>
+	
+	<update id="updateCaseResult" parameterType="com.xiaoniu.model.CaseResultModel">
+			update f_case_result set startTime=#{startTime},endTime=#{endTime},costTime=#{costTime},resultStatus=#{resultStatus},updateTime=NOW()
+			where caseId=#{caseId}
+	</update>
+</mapper>

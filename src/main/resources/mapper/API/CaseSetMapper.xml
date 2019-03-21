@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.xiaoniu.mapper.CaseSetMapper">
+
+		<sql id="query_items_where">
+			<if test="caseSetName != null and caseSetName !=''">  
+	            and  f_case_set.caseSetName like  "%"#{caseSetName}"%"
+	        </if>
+	        <if test="caseRelation != null and caseRelation !=''">  
+	            and  f_case_set.caseRelation like  "%"#{caseRelation}"%"
+	        </if>           
+	   </sql>
+	   
+	   	<sql id="query_SetCaseResult"> 
+	        <if test="setId != null and   setId !='-1'">  
+	            batch=(select max(batch) from f_set_result where setId =#{setId}) 
+	        </if>
+           <if test="resultStatus != null and resultStatus !=''">  
+		            and  resultStatus like  "%"#{resultStatus}"%"
+		    </if>
+   		</sql>
+
+	   
+	<select id="getAllSet" parameterType="com.xiaoniu.model.CaseSetModel" resultType="CaseSetModel">
+		select * from f_case_set 
+		<where>
+            <include refid="query_items_where"></include>
+        </where>
+	</select>
+	
+	<select id="getSet" parameterType="int" resultType="CaseSetModel">
+		select * from f_case_set  where id=#{id}
+	</select>
+	
+	<select id="getSetCaseResult" parameterType="com.xiaoniu.model.CaseResultModel" resultType="CaseResultModel">
+			select * from f_case_result 
+        <where>
+            <include refid="query_SetCaseResult"></include>
+        </where>
+	</select>
+	
+	<insert id="addSet">
+		insert into f_case_set(caseSetName,caseRelation,caseCount,remark,createTime) values(#{caseSetName}, #{caseRelation},#{caseCount}, #{remark},NOW()) 
+	</insert>
+	
+	<delete id="delSet" parameterType="int">
+		delete from f_case_set where id=#{id}
+	</delete>
+	
+	<update id="updateSet" parameterType="com.xiaoniu.model.CaseSetModel">
+		update f_case_set set caseRelation=#{caseRelation},caseCount=#{caseCount},remark=#{remark},updateTime=NOW() where id=#{id}
+	</update>
+	<!-- 添加用例集结果 -->
+	<insert id="addSetResult">
+		insert into f_set_result(setId,startTime,endTime,costTime,runEnv,batch,createTime) values(#{setId}, #{startTime},#{endTime},#{costTime},#{runEnv},#{batch},NOW()) 
+	</insert>
+	
+	<!-- 获取用例集结果 -->
+	<select id="getSetResult" resultType="com.xiaoniu.model.CaseSetResultModel">
+		select * from f_set_result where setId =#{setId} and batch=(select max(batch) from f_set_result where setId =#{setId})
+	</select>
+	
+	<!-- 查询setId为-1，最近七次执行结果 -->
+	<select id="getSetResultRent" resultType="com.xiaoniu.model.CaseSetResultModel">
+		select * from f_set_result where setId=#{setId} ORDER BY id desc LIMIT 7
+	</select>
+</mapper>

@@ -1,0 +1,26 @@
+html {
+/* 	background-color: #f2f5f7; */
+	background-color: #1E90FF;	
+}
+.navbar-static-top {
+	background-color: #1E90FF;
+}
+.navbar-brand {
+/* 	background: url('') no-repeat 10px 8px; */
+	display: inline-block;
+	vertical-align: middle;
+	color: white;
+}
+#container {
+	margin-left: 0px;
+	position: absolute;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+/* 	background: #4d5e70; */
+	background: #f2f5f7;
+}
+
+#links {
+	color: 	#6666CC
+}

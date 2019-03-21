@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniu.mapper.UserMapper">
+
+	<sql id="query_items_where">
+        <if test="id != null and   id !='0'">  
+            and  f_user.id = #{id}
+        </if> 
+			<if test="user != null and user !=''">  
+	            and  f_user.user like  "%"#{user}"%"
+	        </if> 
+	        <if test="userName != null and userName !=''">  
+	            and  f_user.userName like  "%"#{userName}"%"
+	        </if> 
+	        <if test="email != null and email !=''">  
+	            and  f_user.email like  "%"#{email}"%"
+	        </if> 	           
+	  </sql>
+   
+	<!-- 目的：为DAO接口方法提供sql语句配置 -->
+	<resultMap id="UserInfoMap" type="com.xiaoniu.model.UserModel">  		
+  		<result property="id" column="id"/>
+  		<result property="user" column="user"/>
+  		<result property="userPwd" column="userPwd"/>
+  		<result property="userName" column="userName"/>
+  		<result property="userIp" column="userIp"/>
+  		<result property="email" column="email"/>
+  		<result property="creatTime" column="creatTime"/>
+	</resultMap>
+	
+	<select id="checkUser" parameterType="String" resultMap="UserInfoMap">
+			select * from f_user  where user = #{user}
+	</select>
+	
+	<!-- 查询用户和密码进行登录 -->
+	<select id="findByUsername" parameterType="String" resultMap="UserInfoMap" >	
+		select * from f_user  where user = #{user} and userPwd=#{userPwd}		
+	</select>	
+	
+	<insert id="registerUser" parameterType="String">
+		insert into f_user(user,userPwd,userName,userIp,email,creatTime) values(#{user},#{userPwd},#{userName},#{userIp},#{email},NOW())
+	</insert>
+	
+	<select id="getAllUser" parameterType="com.xiaoniu.model.UserModel" resultMap="UserInfoMap">
+		select * from f_user
+		<where>
+			<include refid="query_items_where"></include>
+		</where>
+	</select>
+	
+	<select id="getUserById" parameterType="int" resultMap="UserInfoMap">
+			select * from f_user  where id = #{id}
+	</select>
+	
+	<delete id="delUser" parameterType="int" >
+	 		delete from f_user  where id = #{id}
+	</delete>
+	
+	<update id="UpdateUser">
+		update f_user set userPwd=#{userPwd},userName=#{userName},email=#{email} where id=#{id}
+	</update>
+</mapper>

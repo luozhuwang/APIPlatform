@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniu.mapper.APICaseRelationMapper">
+
+	<insert id="addAPICaseRelation">
+		insert into f_api_case_relattion(caseId,APIId,caseData,caseAssert,caseParam,createTime) values(#{caseId},#{APIId},#{caseData},#{caseAssert},#{caseParam},NOW())
+	</insert>
+	<select id="getAPIRelation" resultType="APICaseRelation">
+		select t2.caseId,t2.APIId,t1.apiName,t1.apiHost,t1.apiUrl,t1.apiMethod,t2.caseData,t2.caseAssert,t2.caseParam from f_api t1,f_api_case_relattion t2 
+		where t1.id=t2.APIId and t2.id=#{relationId} and t2.caseId=#{caseId} and t2.APIId=#{APIId}
+	</select>
+	
+	<select id="getAPICaseRelations" parameterType="int" resultType="APICaseRelation">
+		select t2.caseId,t2.APIId,t2.id,t1.apiName,t1.apiHost,t1.apiUrl,t1.apiMethod,t2.caseData,t2.caseAssert,t2.caseParam from f_api t1,f_api_case_relattion t2 
+		where t1.id=t2.APIId and t2.caseId=#{caseId}
+	</select>
+	
+	<delete id="delAPICaseRelation">
+		delete from f_api_case_relattion where  caseId=#{caseId}
+	</delete>
+</mapper>

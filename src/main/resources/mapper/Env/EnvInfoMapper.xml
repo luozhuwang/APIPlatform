@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniu.mapper.EnvInfoMapper">	
+	<sql id="query_items_where">
+        <if test="id != null and   id !='-1'">  
+            and  f_env_list.id = #{id}
+        </if> 
+		<if test="envTitle != null and envTitle !=''">  
+            and  f_env_list.envTitle = #{envTitle}
+        </if> 
+        <if test="envDomain != null and envDomain !=''">  
+            and  f_env_list.envDomain = #{envDomain}
+        </if> 
+        <if test="envIp !=null and envIp !=''">  
+             and  f_env_list.envIp = #{envIp}
+        </if>
+           
+   </sql>
+   
+	<insert id="addEnv">
+		insert into f_env_list(envTitle,envDomain,envIp,createTime) values(#{envTitle},#{envDomain},#{envIp},NOW())
+	</insert>
+	
+	<delete id="delEnv">
+		delete from f_env_list where id=#{id}
+	</delete>
+	
+	<select id="getEnv" resultType="com.xiaoniu.model.EnvInfoModel"  parameterType="int">
+		select * from f_env_list where id=#{id}	
+	</select>
+	
+	<select id="getServer" resultType="com.xiaoniu.model.EnvInfoModel"  parameterType="EnvInfoModel">
+		select * from f_env_list 
+		<where>
+			<include refid="query_items_where"></include>
+		</where>
+	</select>
+	
+	<select id="getAllEnv" resultType="com.xiaoniu.model.EnvInfoModel"  parameterType="EnvInfoModel">
+		select * from f_env_list 
+		<where>
+			<include refid="query_items_where"></include>
+		</where>
+	</select>
+	
+	<select	id="getEnvALLTitle" resultType="com.xiaoniu.model.EnvInfoModel">
+		select DISTINCT(envTitle) from f_env_list 
+	</select>
+</mapper>    

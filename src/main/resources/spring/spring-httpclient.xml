@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+<!--    	 <context:property-placeholder location="classpath:httpclient.properties" /> -->
+   	 	
+    <!-- 定义httpclient连接池 -->
+    <bean id="httpClientConnectionManager" class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" destroy-method="close">     
+        <!-- 设置连接总数 -->
+        <property name="maxTotal" value="200"></property>
+        <!-- 设置每个地址的并发数 -->
+        <property name="defaultMaxPerRoute" value="100"></property>
+    </bean>
+    
+    <!-- 定义 HttpClient工厂，这里使用HttpClientBuilder构建-->
+    <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
+        <property name="connectionManager" ref="httpClientConnectionManager"></property>
+    </bean>
+
+    <!-- 得到httpClient的实例 -->
+    <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build"/>
+
+    <!-- 定期清理无效的连接 -->
+    <bean class="com.xiaoniu.httpclient.ClearConnectionsHandler" destroy-method="shutdown">
+        <constructor-arg index="0" ref="httpClientConnectionManager"/>
+    </bean>
+
+    <!-- 定义requestConfig的工厂 -->
+    <bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig.Builder">
+        <!-- 从连接池中获取到连接的最长时间 -->
+        <property name="connectionRequestTimeout" value="500"/>
+        <!-- 创建连接的最长时间 -->
+        <property name="connectTimeout" value="5000"/>
+        <!-- 数据传输的最长时间 -->
+        <property name="socketTimeout" value="30000"/>
+        <!-- 提交请求前测试连接是否可用 -->
+        <property name="staleConnectionCheckEnabled" value="true"/>
+    </bean>
+
+    <!-- 得到requestConfig实例 -->
+    <bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build" />
+
+    <bean id="httpClientOperate" class="com.xiaoniu.httpclient.HttpClientOperate" >
+        <property name="requestConfig" ref="requestConfig" />
+    </bean>
+
+</beans>

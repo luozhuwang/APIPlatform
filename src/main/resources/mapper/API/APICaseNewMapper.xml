@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniu.mapper.APICaseNewMapper">
+	
+		<!-- 目的：为DAO接口方法提供sql语句配置 -->
+	<resultMap id="APICaseNewMap" type="com.xiaoniu.model.APICaseNew">  		
+  		<result property="id" column="id"/>
+  		<result property="dependCaseId" column="dependCaseId"/>
+  		<result property="caseName" column="caseName"/>
+  		<result property="remark" column="remark"/>
+	</resultMap>
+	
+	<sql id="query_items_where">
+        <if test="id != null and id !='' and  id !='-1'">  
+            and  f_api_case.id = #{id}
+        </if> 
+        <if test="caseName != null and caseName !=''">  
+            and  f_api_case.caseName like  "%"#{caseName}"%"
+        </if> 		   
+   </sql>
+   
+   	<sql id="query_id">
+        <if test="id != null and id !='' and  id !='-1'">  
+            and  f_api_case.id = #{id}
+        </if> 	   
+   </sql>
+	<insert id="addAPICaseNew" parameterType="com.xiaoniu.model.APICaseNew">
+			insert into f_api_case(dependCaseId,caseName,remark,createTime) values(#{dependCaseId},#{caseName},#{remark},NOW()) 
+	</insert>
+    
+    <select id="getAPICaseNew" parameterType="Integer" resultMap="APICaseNewMap">
+    	select * from f_api_case where id=#{id}    	
+    </select>
+    
+    <select id="getMaxCaseId"  resultType="Integer">
+    	select max(id) from f_api_case ;   	
+    </select>
+    
+    <delete id="delAPICaseNew">
+    	delete 	from f_api_case where id=#{id}   
+    </delete>
+    
+    <select id="getALLAPICaseNew" parameterType="com.xiaoniu.model.APICaseNew" resultMap="APICaseNewMap">
+    	select * from f_api_case
+    	<where>
+            <include refid="query_items_where"></include>
+        </where> 
+    </select>
+        
+    <update id="updateAPICaseNew" parameterType="com.xiaoniu.model.APICaseNew">
+    	update f_api_case set dependCaseId=#{dependCaseId},remark=#{remark},updateTime=NOW() where id=#{id}    
+    </update>
+    
+    <update id="updateAPICaseIsRun" parameterType="com.xiaoniu.model.APICaseNew">
+    	update f_api_case set isRun=#{isRun}  
+		<where>
+            <include refid="query_id"></include>
+        </where> 
+    </update>
+</mapper>

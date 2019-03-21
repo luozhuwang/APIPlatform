@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniu.mapper.TempVarMapper">
+
+	<insert id="addTempVar">
+		INSERT into f_var_temp(varName,varRule,varValue)
+		values(#{varName},#{varRule},#{varValue}) 
+	</insert>
+	
+	<select id="getTempVarByName" resultType="com.xiaoniu.model.EnvVarModel"  parameterType="String">
+		select * from f_var_temp where varName=#{varName}
+	</select>
+	
+	<delete id="truncateVarTemp">
+		truncate table f_var_temp;
+	</delete>
+</mapper>

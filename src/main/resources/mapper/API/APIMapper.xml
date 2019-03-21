@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.xiaoniu.mapper.APIMapper">
+
+	<sql id="query_items_where">
+        <if test="id != null and   id !='0'">  
+            and  f_api.id = #{id}
+        </if> 
+		<if test="apiName != null and apiName !=''">  
+            and  f_api.apiName like  "%"#{apiName}"%"
+        </if> 
+        <if test="apiMethod != null and apiMethod !=''">  
+            and  f_api.apiMethod like  "%"#{apiMethod}"%"
+        </if> 
+        <if test="apiStatus !=null and apiStatus !='-1'">  
+             and  f_api.apiStatus = #{apiStatus}
+        </if>
+           
+   </sql>
+   
+	<select id="getALLAPI" parameterType="com.xiaoniu.model.APIModel" resultType="APIModel">
+		select * from f_api
+		 <where>
+            <include refid="query_items_where"></include>
+        </where> 
+	</select>
+	
+	<select id="getAPI"  resultType="APIModel"  parameterType="int">
+		select * from f_api where id=#{id}		 
+	</select>
+	
+	<delete id="delAPI"  parameterType="int">
+		delete from f_api where id=#{id}
+	</delete>
+	
+	<insert id="addAPI" >
+			INSERT into f_api(apiName,apiHost,apiUrl,apiMethod,apiHeaders,apiParams,apiStatus,remark) 
+			values(#{apiName},#{apiHost},#{apiUrl},#{apiMethod},#{apiHeaders},#{apiParams},#{apiStatus},#{remark})
+	</insert>
+	
+	<update id="updateAPI" parameterType="com.xiaoniu.model.APIModel">
+			update f_api set apiName=#{apiName},apiHost=#{apiHost},apiUrl=#{apiUrl},apiMethod=#{apiMethod},apiHeaders=#{apiHeaders},apiParams=#{apiParams},apiStatus=#{apiStatus},remark=#{remark},updateTime=NOW()
+			where id=#{id}
+	</update>
+</mapper>

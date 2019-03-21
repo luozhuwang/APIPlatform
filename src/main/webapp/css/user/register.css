@@ -1,0 +1,13 @@
+.errstyle {
+	color: red;
+}
+b {
+	color: red;
+	font-weight: bolder;
+}
+body {
+	background-image: url("../../image/blue.jpg");
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-size: cover;
+}

@@ -1,0 +1,78 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Lato, Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 1.72222;
+	color: #34495e;
+	background-color: #fff;
+}
+
+.wrap {
+	min-width: 100%;
+	position: absolute;
+	background: #eff3f6 bottom;
+	min-height: 100%;
+	overflow: hidden;
+}
+
+.left {
+	margin-left: 0px;
+	position: absolute;
+	box-sizing: border-box;
+	width: 200px;
+	height: 100%;
+	background: #4d5e70 bottom;
+}
+
+.logoDiv {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	height: 70px;
+	background-color: #354457;
+	font-size: 17px;
+	color: #fff;
+	vertical-align: bottom;
+}
+
+.logoTitle {
+	margin-left: 15px;
+	line-height: 1.7;
+}
+.
+.menu-title {
+	margin-left: 15px;
+	color: #828e9a;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	font-size: 14px;
+	font-weight: bold;
+}
+.menu-item {
+	padding-left: 15px;
+	line-height: 40px;
+	height: 40px;
+	color: #aab1b7;
+	cursor: pointer;
+	width: 200px;
+	overflow:hidden;
+}
+
+.menu-item-active {
+	background-color: #3d4e60;
+	border-right: 4px solid #647f9d;
+	color: #fff;
+}
+
+.right {
+	box-sizing: border-box;
+	float: left;
+	box-sizing: border-box;
+	padding-left: 200px;
+	overflow-y: overlay;
+	overflow-x: hidden;
+	clear: both;
+	color: #717592;
+	min-width: 100%;
+	min-height: 500px;
+}

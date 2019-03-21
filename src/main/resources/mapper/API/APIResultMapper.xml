@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniu.mapper.APIResultMapper">
+
+	<sql id="query_APIResult"> 
+	        <if test="caseId != null and   caseId !='-1'">  
+	            and caseId=#{caseId}
+	        </if>
+           <if test="setId != null and   setId !='-2'">  
+	            and setId=#{setId}
+	        </if>
+	        <if test="batch != null and   batch !='-1'">  
+	            and batch=#{batch}
+	        </if>
+   	</sql>
+	
+	<select id="getAPIResult" resultType="com.xiaoniu.model.CaseResultModel" >
+		select * from f_api_result where caseId=#{caseId} and batch=(select max(batch) from f_api_result where caseId=#{caseId} )
+	</select>
+	
+	<select id="getAPIResultBySetId" resultType="com.xiaoniu.model.CaseResultModel">
+		select * from f_api_result where  batch =(select max(batch) from f_set_result where setId=#{setId}) and caseId=#{caseId}
+	</select>
+	
+	<select id="getAPIResultBybatch" resultType="com.xiaoniu.model.CaseResultModel">
+		select * from f_api_result 
+		<where>
+            <include refid="query_APIResult"></include>
+        </where>
+	</select>
+	
+	<insert id="addAPIResult">
+		insert into f_api_result(caseId,APIId,relationId,setId,startTime,endTime,costTime,request,statusCode,response,batch,createTime) 
+		values(#{caseId},#{APIId},#{relationId},#{setId},#{startTime},#{endTime},#{costTime},#{request},#{statusCode},#{response},#{batch},NOW());
+	</insert>
+</mapper>    

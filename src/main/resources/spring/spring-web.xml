@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/task
+    	http://www.springframework.org/schema/task/spring-task-3.2.xsd
+        ">
+
+	<!-- 如果web.xml中配置了静态资源,只需要配置此项即可 -->
+	<mvc:default-servlet-handler />
+
+	<!-- 配置springMVC -->
+	<!-- 1：开启springMVC注解模式 -->
+	<!-- 简化配置： (1)自动注册DefaultAnnotationHandlerMapping，AnnotationMethodHandlerAdapter 
+		(2)提供一系列：数据绑定，数字和日期的format @NumberFormat,@DataTimeFormat xml,json默认读写支持 -->
+	<mvc:annotation-driven />
+	
+	<!-- 开户登陆拦截器 ，需要注意代码中url的判断-->
+<!-- 	<mvc:interceptors>   -->
+<!-- 	    <mvc:interceptor>   -->
+<!-- 			进行拦截：/**表示拦截所有controller  -->
+<!-- 	        <mvc:mapping path="/**" /> -->
+<!-- 			不进行拦截 -->
+<!-- 	        <mvc:exclude-mapping path="/APIPlatform/home"/>	        -->
+<!-- 	        <bean class="com.xiaoniu.Interceptor.LoginInterceptor"/>   -->
+<!-- 	    </mvc:interceptor>   -->
+<!-- 	</mvc:interceptors>    -->
+
+<!--JSR-303-->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+<!--         <property name="validationMessageSource" ref="messageSource"/> -->
+    </bean>
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="validatemessage"/>
+        <property name="useCodeAsDefaultMessage" value="false"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="cacheSeconds" value="60"/>
+    </bean>
+    <bean  id="webBindingInitializer" class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+        <property name="conversionService">
+            <bean class="org.springframework.format.support.FormattingConversionServiceFactoryBean"></bean>
+        </property>
+        <property name="validator" ref="validator"/>
+    </bean>
+
+
+	<!-- 引入多配置文件 -->
+<!--     <context:property-placeholder location="classpath:config.properties"/> -->
+
+	<!--如果web.xml中未配置 加载静态资源，此处需要配置 -->
+	<!-- <mvc:resources location="/image/" mapping="/image/**"/> -->
+	<!-- <mvc:resources location="/js/" mapping="/js/**"/> -->
+	<!-- <mvc:resources location="/css/" mapping="/css/**"/> -->
+	<!-- <mvc:resources location="/bootstrap/" mapping="/bootstrap/**"/> -->
+
+	<!--执行测试用例前注入  -->
+	<bean class="com.xiaoniu.tools.listener.SpringContextUtils" lazy-init="false"/>		
+	
+<!-- 支持上传文件 -->
+    <bean id="multipartResolver"  
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver" >  
+<!--         100M   -->
+        <property name="maxUploadSize" value="104857600"></property>      
+        <property name="defaultEncoding" value="utf-8"></property>     
+<!--         <property name="uploadTempDir" value="file:/fileUpload/temp"></property>      -->
+    </bean>
+
+	<!-- 2：配置jsp显示ViewResolver -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	<!-- 3：扫描web相关的bean -->
+	<context:component-scan base-package="com.xiaoniu.controller,com.xiaoniu.httpclient" />
+	
+	<!-- 配置定时任务 -->
+	<!-- 增加定时任务插件 -->
+    <context:annotation-config></context:annotation-config>
+    <!-- 开启这个配置 spring才能识别@Scheduled注解 -->
+    <task:annotation-driven scheduler="qbScheduler" mode="proxy"/>
+    <!-- 推荐配置线程池，若不配置多任务下会有问题。后面会详细说明单线程的问题。 -->
+    <task:scheduler id="qbScheduler" pool-size="10"/>
+	
+</beans>

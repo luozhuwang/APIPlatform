@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<!--  thread-count="1" 为同时执行的线程数   parallel="tests" 为同时执行的测试级别  verbose：命令行信息打印等级，不会影响测试报告输出内容 -->
+<suite name="自动化用例" thread-count="1" parallel="false" verbose="5" >
+	<test name="自动化用例" preserve-order="true">
+		<classes>	
+		<!-- 执行测试-->		
+			<class name="com.xiaoniu.tools.xiaoniu_Test" />
+		</classes>
+	</test>
+	
+	<listeners>
+		<!-- class-name的值填写为时间创建的监听器的路径 -->
+		<listener class-name="com.xiaoniu.tools.listener.ExtentTestNGIReporterListener"></listener>
+	</listeners>
+</suite>
+
+
+
